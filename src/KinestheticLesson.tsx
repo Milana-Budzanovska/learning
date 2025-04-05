@@ -12,13 +12,17 @@ const oddOneOutOptions = [
   { image: "🎨", label: "Фарба", sound: "Тиша" }, // зайвий
 ];
 
+const shuffledWords = ["Грім", "Сміх", "Дзвінок", "Небо", "Радість", "Телефон"];
+
 const KinestheticLesson: React.FC = () => {
-  const [matchedSounds, setMatchedSounds] = useState<string[]>([]);
   const [selectedOdd, setSelectedOdd] = useState<string | null>(null);
 
   const playSound = (label: string) => {
-    const audio = new Audio(audioMap[label]);
-    audio.play();
+    const sound = audioMap[label];
+    if (sound) {
+      const audio = new Audio(sound);
+      audio.play();
+    }
   };
 
   const handleOddOneOut = (label: string) => {
@@ -44,20 +48,24 @@ const KinestheticLesson: React.FC = () => {
               </button>
             ))}
           </div>
-          <p className="text-sm text-gray-600 mt-2">Натисни на кнопки, щоб прослухати звуки, і подумай, що до чого пасує.</p>
+          <p className="text-sm text-gray-600 mt-2">Натисни на кнопку, щоб прослухати звук і знайти логічне слово серед інших.</p>
         </section>
 
         {/* Вправа 2: Хаотичні пари */}
         <section className="mb-12">
-          <h2 className="text-2xl font-bold text-pink-600 mb-4">🧠 З'єднай пари (змішані асоціації)</h2>
-          <div className="flex flex-wrap justify-between gap-4">
-            <div className="bg-white p-4 rounded-xl border border-gray-300 w-40 text-center shadow hover:bg-green-50 cursor-pointer">Грім – Небо</div>
-            <div className="bg-white p-4 rounded-xl border border-gray-300 w-40 text-center shadow hover:bg-green-50 cursor-pointer">Сміх – Радість</div>
-            <div className="bg-white p-4 rounded-xl border border-gray-300 w-40 text-center shadow hover:bg-green-50 cursor-pointer">Дзвінок – Телефон</div>
-            <div className="bg-white p-4 rounded-xl border border-gray-300 w-40 text-center shadow hover:bg-green-50 cursor-pointer">Небо – Грім</div>
-            <div className="bg-white p-4 rounded-xl border border-gray-300 w-40 text-center shadow hover:bg-green-50 cursor-pointer">Телефон – Дзвінок</div>
+          <h2 className="text-2xl font-bold text-pink-600 mb-4">🧠 З'єднай слова-асоціації</h2>
+          <div className="flex flex-wrap gap-4 justify-center">
+            {shuffledWords.map((word, idx) => (
+              <button
+                key={idx}
+                onClick={() => playSound(word)}
+                className="bg-white p-4 rounded-xl border border-gray-300 shadow hover:bg-pink-100 cursor-pointer"
+              >
+                {word}
+              </button>
+            ))}
           </div>
-          <p className="text-sm text-gray-600 mt-2">Знайди правильні зв’язки – але будь уважним, елементи перемішані!</p>
+          <p className="text-sm text-gray-600 mt-2">Натисни на слово, яке асоціюється з іншим. Звук підкаже.</p>
         </section>
 
         {/* Вправа 3: Що зайве? */}
