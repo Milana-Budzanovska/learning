@@ -1,32 +1,14 @@
 import React, { useState } from 'react';
 
-const audioMap: Record<string, string> = {
-  "Грім": "https://www.soundjay.com/nature/thunder-1.mp3",
-  "Сміх": "https://www.soundjay.com/human/laugh-1.mp3",
-  "Дзвінок": "https://www.soundjay.com/phone/telephone-ring-1.mp3",
-};
-
-const oddOneOutOptions = [
-  { image: "🌧️", label: "Дощ", sound: "Грім" },
-  { image: "📞", label: "Телефон", sound: "Дзвінок" },
-  { image: "🎨", label: "Фарба", sound: "Тиша" }, // зайвий
-];
-
-const shuffledWords = ["Грім", "Сміх", "Дзвінок", "Небо", "Радість", "Телефон"];
-
 const KinestheticLesson: React.FC = () => {
-  const [selectedOdd, setSelectedOdd] = useState<string | null>(null);
+  const [mazeCompleted, setMazeCompleted] = useState(false);
+  const [shapesSelected, setShapesSelected] = useState<string[]>([]);
+  const [patternComplete, setPatternComplete] = useState(false);
 
-  const playSound = (label: string) => {
-    const sound = audioMap[label];
-    if (sound) {
-      const audio = new Audio(sound);
-      audio.play();
-    }
-  };
-
-  const handleOddOneOut = (label: string) => {
-    setSelectedOdd(label);
+  const toggleShape = (shape: string) => {
+    setShapesSelected(prev =>
+      prev.includes(shape) ? prev.filter(s => s !== shape) : [...prev, shape]
+    );
   };
 
   return (
@@ -34,58 +16,57 @@ const KinestheticLesson: React.FC = () => {
       <div className="max-w-5xl mx-auto bg-white rounded-3xl shadow-xl p-8">
         <h1 className="text-3xl font-bold text-purple-700 text-center mb-8">Кінестетичний урок</h1>
 
-        {/* Вправа 1: Асоціація звук-слово */}
+        {/* Вправа 1: Пальцевий лабіринт */}
         <section className="mb-12">
-          <h2 className="text-2xl font-bold text-purple-600 mb-4">🎧 Знайди пару: звук та слово</h2>
-          <div className="grid grid-cols-3 gap-6">
-            {Object.keys(audioMap).map((label, idx) => (
-              <button
-                key={idx}
-                onClick={() => playSound(label)}
-                className="bg-purple-100 hover:bg-purple-200 p-4 rounded-xl shadow text-lg"
-              >
-                🔊 {label}
-              </button>
-            ))}
+          <h2 className="text-2xl font-bold text-purple-600 mb-4">🌀 Проведи пальцем лабіринтом</h2>
+          <div className="bg-purple-100 p-6 rounded-xl shadow-md text-center">
+            <p className="mb-4 text-lg">Уяви, що твій палець – це олівець. Повільно проведи його по уявному лабіринту (на екрані), не поспішаючи.</p>
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/Maze_1.svg/800px-Maze_1.svg.png"
+              alt="Maze"
+              className="mx-auto rounded-xl w-full md:w-1/2"
+              onClick={() => setMazeCompleted(true)}
+            />
+            {mazeCompleted && <p className="mt-3 text-green-600 font-bold">✅ Молодець! Завдання виконано!</p>}
           </div>
-          <p className="text-sm text-gray-600 mt-2">Натисни на кнопку, щоб прослухати звук і знайти логічне слово серед інших.</p>
         </section>
 
-        {/* Вправа 2: Хаотичні пари */}
+        {/* Вправа 2: Вибір форми на дотик */}
         <section className="mb-12">
-          <h2 className="text-2xl font-bold text-pink-600 mb-4">🧠 З'єднай слова-асоціації</h2>
-          <div className="flex flex-wrap gap-4 justify-center">
-            {shuffledWords.map((word, idx) => (
-              <button
+          <h2 className="text-2xl font-bold text-pink-600 mb-4">🔺 Вибери фігури</h2>
+          <p className="text-center mb-3">Обери ті фігури, які мають закруглені краї. Натисни на них.</p>
+          <div className="flex flex-wrap justify-center gap-6">
+            {['Коло', 'Квадрат', 'Овал', 'Трикутник', 'Прямокутник', 'Хмара'].map((shape, idx) => (
+              <div
                 key={idx}
-                onClick={() => playSound(word)}
-                className="bg-white p-4 rounded-xl border border-gray-300 shadow hover:bg-pink-100 cursor-pointer"
+                onClick={() => toggleShape(shape)}
+                className={`cursor-pointer w-32 h-32 flex items-center justify-center rounded-2xl border-4 text-lg font-bold shadow-md transition ${
+                  shapesSelected.includes(shape) ? 'bg-green-200 border-green-600' : 'bg-white border-gray-300'
+                }`}
               >
-                {word}
-              </button>
+                {shape}
+              </div>
             ))}
           </div>
-          <p className="text-sm text-gray-600 mt-2">Натисни на слово, яке асоціюється з іншим. Звук підкаже.</p>
         </section>
 
-        {/* Вправа 3: Що зайве? */}
-        <section className="mb-6">
-          <h2 className="text-2xl font-bold text-blue-600 mb-4">🔎 Що зайве?</h2>
-          <div className="grid grid-cols-3 gap-6">
-            {oddOneOutOptions.map((item, idx) => (
+        {/* Вправа 3: Побудуй візерунок */}
+        <section className="mb-12">
+          <h2 className="text-2xl font-bold text-blue-600 mb-4">🎨 Відтвори шаблон</h2>
+          <p className="text-center mb-3">Повторюй послідовність: 🔵🔴🟡🔵...</p>
+          <div className="flex justify-center gap-4 mb-4">
+            {['🔵', '🔴', '🟡'].map((color, idx) => (
               <button
                 key={idx}
-                onClick={() => handleOddOneOut(item.label)}
-                className={`p-6 border rounded-xl shadow text-center text-lg hover:bg-blue-100 ${selectedOdd === item.label ? 'bg-blue-200' : 'bg-white'}`}
+                onClick={() => setPatternComplete(true)}
+                className="text-4xl w-20 h-20 bg-white rounded-full shadow border hover:bg-gray-100"
               >
-                {item.image} <br /> {item.label}
+                {color}
               </button>
             ))}
           </div>
-          {selectedOdd && (
-            <p className="mt-4 text-lg font-semibold text-center">
-              {selectedOdd === 'Фарба' ? '✅ Правильно! Фарба не має звуку.' : '❌ Спробуй ще раз!'}
-            </p>
+          {patternComplete && (
+            <p className="text-center text-green-600 font-semibold">✅ Чудово! Візерунок повторено!</p>
           )}
         </section>
       </div>
