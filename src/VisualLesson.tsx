@@ -41,9 +41,10 @@ const VisualLessonPage = () => {
                 <h3 className="font-semibold text-purple-600 mb-2">🎥 Подивись відео</h3>
                 <iframe
                   width="100%"
-                  height="200"
+                  height="250"
                   src="https://youtu.be/jh7wLjqI5PY?si=EkVXjOG73-aHxnmN"
                   title="Відео уроку"
+                  frameBorder="0"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
                   className="rounded-lg"
