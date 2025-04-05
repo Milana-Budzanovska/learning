@@ -40,15 +40,15 @@ const VisualLessonPage = () => {
               <div className="bg-pink-100 p-4 rounded-xl shadow-md">
                 <h3 className="font-semibold text-purple-600 mb-2">🎥 Подивись відео</h3>
                 <iframe
-                  width="100%"
-                  height="250"
-                  src="https://youtu.be/jh7wLjqI5PY?si=EkVXjOG73-aHxnmN"
-                  title="Відео уроку"
-                  frameBorder="0"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                  className="rounded-lg"
-                ></iframe>
+  width="100%"
+  height="250"
+  src="https://www.youtube.com/embed/jh7wLjqI5PY"
+  title="Відео уроку"
+  frameBorder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  allowFullScreen
+  className="rounded-lg"
+/>
               </div>
               <div className="bg-purple-100 p-4 rounded-xl shadow-md">
                 <h3 className="font-semibold text-purple-600 mb-2">🎧 Послухай аудіо</h3>
