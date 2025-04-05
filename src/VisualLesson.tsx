@@ -42,7 +42,7 @@ const VisualLessonPage = () => {
                 <iframe
                   width="100%"
                   height="200"
-                  src="https://www.youtube.com/embed/vpTnFklIquk"
+                  src="https://youtu.be/jh7wLjqI5PY?si=EkVXjOG73-aHxnmN"
                   title="Відео уроку"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
