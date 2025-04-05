@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 const AudioLessonPage: React.FC = () => {
   const [selected, setSelected] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState(false);
+  const [feedback, setFeedback] = useState<string>('');
   const correctAnswer = 'B';
 
   const speak = (text: string) => {
@@ -11,13 +12,11 @@ const AudioLessonPage: React.FC = () => {
     utterance.pitch = 1.2;
     utterance.rate = 0.95;
     utterance.volume = 1;
-
     const voices = speechSynthesis.getVoices();
     const englishVoice = voices.find(voice =>
       voice.lang.includes('en') && voice.name.toLowerCase().includes('google')
     );
     if (englishVoice) utterance.voice = englishVoice;
-
     speechSynthesis.speak(utterance);
   };
 
@@ -38,14 +37,17 @@ const AudioLessonPage: React.FC = () => {
   const handleAnswer = (answer: string) => {
     setSelected(answer);
     speak(`You selected option ${answer}`);
+    setFeedback('');
   };
 
   const handleSubmit = () => {
     setSubmitted(true);
     if (selected === correctAnswer) {
       speak("Great job! That’s the correct answer.");
+      setFeedback("✅ Correct! That’s the right answer.");
     } else {
       speak("That’s okay! Mistakes help us learn. Let’s try again.");
+      setFeedback("❌ Incorrect. Try again.");
     }
   };
 
@@ -101,6 +103,9 @@ const AudioLessonPage: React.FC = () => {
               ✅ Check
             </button>
           )}
+          {submitted && (
+            <p className="mt-4 text-lg text-purple-700 font-semibold">{feedback}</p>
+          )}
           <button
             onClick={() => speak("In this task, choose the correct answer. Don’t worry if you’re not sure. I’m here to help!")}
             className="mt-4 ml-4 bg-purple-500 text-white px-4 py-2 rounded-full hover:bg-purple-700"
@@ -109,7 +114,7 @@ const AudioLessonPage: React.FC = () => {
           </button>
         </div>
 
-        {/* Extra materials */}
+        {/* Extra Materials */}
         <div className="bg-white p-6 rounded-xl shadow-inner border-2 border-purple-200">
           <h2 className="text-xl font-semibold text-purple-700 mb-4">🔗 Extra Materials</h2>
           <div className="space-y-3">
