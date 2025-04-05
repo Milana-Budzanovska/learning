@@ -9,7 +9,7 @@ const AudioLessonPage = () => {
         {/* Асистент */}
         <div className="flex justify-center mb-6">
           <img
-            src="/assets/flik.png"
+            src="/public/assets/flik.png"
             alt="Асистент"
             className="w-36 h-36 rounded-full shadow-md"
           />
