@@ -22,7 +22,7 @@ const KinestheticLesson: React.FC = () => {
           <div className="bg-purple-100 p-6 rounded-xl shadow-md text-center">
             <p className="mb-4 text-lg">Уяви, що твій палець – це олівець. Повільно проведи його по уявному лабіринту (на екрані), не поспішаючи.</p>
             <img
-              src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/Maze_1.svg/800px-Maze_1.svg.png"
+              src="pngtree-black-rectangular-labyrinth-vector-background-png-image_5070257.png"
               alt="Maze"
               className="mx-auto rounded-xl w-full md:w-1/2"
               onClick={() => setMazeCompleted(true)}
