@@ -1,0 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .main-button {
+    @apply bg-gradient-to-r from-purple-400 to-pink-400 text-white font-semibold py-2 px-6 rounded-full shadow-lg hover:scale-105 transition;
+  }
+
+  .card-icon {
+    @apply bg-white shadow-lg rounded-2xl p-4 w-36 h-36 flex flex-col justify-center items-center hover:scale-105 transition;
+  }
+
+  .card-icon p {
+    @apply mt-2 font-medium text-purple-700 text-sm;
+  }
+}
