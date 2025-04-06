@@ -57,7 +57,7 @@ const LearningMenu = () => {
 
       {allVisited && (
         <button
-          onClick={() => navigate("/report")}
+          onClick={() => navigate("/NeuroReport")}
           className="mt-10 bg-purple-700 hover:bg-purple-900 text-white px-6 py-3 rounded-full shadow-lg transition"
         >
           🧠 Переглянути нейрозвіт
