@@ -15,7 +15,6 @@ const LearningMenu = () => {
     const visual = localStorage.getItem("visited_visual") === "true";
     const audio = localStorage.getItem("visited_audio") === "true";
     const kinesthetic = localStorage.getItem("visited_kinesthetic") === "true";
-
     setVisitedLessons({ visual, audio, kinesthetic });
   }, []);
 
@@ -34,21 +33,21 @@ const LearningMenu = () => {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 w-full max-w-4xl">
         <LessonButton
           type="visual"
-          title="Для візуала(очі бачать)"
+          title="Для візуала (очі бачать)"
           color="text-purple-600"
           image="/assets/1000043625-removebg-preview.png"
           onClick={handleSelect}
         />
         <LessonButton
           type="audio"
-          title="Для аудіала(вуха чують)"
+          title="Для аудіала (вуха чують)"
           color="text-pink-600"
           image="/assets/IMG_20250307_010159_215.png"
           onClick={handleSelect}
         />
         <LessonButton
           type="kinesthetic"
-          title="Для кінестетика(ручки роблять)"
+          title="Для кінестетика (ручки роблять)"
           color="text-yellow-600"
           image="/assets/1000043681-fotor-bg-remover-20250312224319.png"
           onClick={handleSelect}
@@ -57,7 +56,7 @@ const LearningMenu = () => {
 
       {allVisited && (
         <button
-          onClick={() => navigate("/NeuroReport")}
+          onClick={() => navigate("/neuro-report")}
           className="mt-10 bg-purple-700 hover:bg-purple-900 text-white px-6 py-3 rounded-full shadow-lg transition"
         >
           🧠 Переглянути нейрозвіт
