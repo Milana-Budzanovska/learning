@@ -34,21 +34,21 @@ const LearningMenu = () => {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 w-full max-w-4xl">
         <LessonButton
           type="visual"
-          title="Для візуала"
+          title="Для візуала(очі бачать)"
           color="text-purple-600"
           image="/assets/1000043625-removebg-preview.png"
           onClick={handleSelect}
         />
         <LessonButton
           type="audio"
-          title="Для аудіала"
+          title="Для аудіала(вуха чують)"
           color="text-pink-600"
           image="/assets/IMG_20250307_010159_215.png"
           onClick={handleSelect}
         />
         <LessonButton
           type="kinesthetic"
-          title="Для кінестетика"
+          title="Для кінестетика(ручки роблять)"
           color="text-yellow-600"
           image="/assets/1000043681-fotor-bg-remover-20250312224319.png"
           onClick={handleSelect}
