@@ -1,90 +1,72 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
 
-const NeuroReport = () => {
-  const [profile, setProfile] = useState('');
-  const [explanation, setExplanation] = useState('');
-  const [percentages, setPercentages] = useState({
-    analyst: 0,
-    creator: 0,
-    dynamic: 0,
-    dreamer: 0,
-    sensor: 0,
-    tactician: 0,
-  });
-  const navigate = useNavigate();
+const NeuroReport: React.FC = () => {
+  const [report, setReport] = useState("");
 
   useEffect(() => {
-    // Фейкові дані поведінки учня
-    const timeSpent = Math.floor(Math.random() * 600) + 100; // секунд
-    const formatsChanged = Math.floor(Math.random() * 10);
-    const cursorMoves = Math.floor(Math.random() * 1000);
-    const mood = localStorage.getItem('mood') || 'спокійний';
+    const variants = [
+      {
+        title: "🌈 Твій нейроповедінковий слід: Дослідник формату",
+        description:
+          "Ти дуже уважно досліджував(-ла) всі три формати. Часто переключав(-ла) стилі, що означає: ти прагнеш знайти найбільш зручний шлях для навчання. Це як науковець, що тестує різні прилади, перш ніж зібрати ракету! 🚀",
+        analysis: [
+          "🧩 Високий рівень адаптивності",
+          "⏱️ Час навчання: оптимальний",
+          "🎨 Ти надаєш перевагу візуальним кольорам",
+          "🎯 Частота переходів між форматами: 5+",
+        ],
+        tip: "Тобі можуть сподобатись завдання з візуалізацією й дослідницькими сюжетами!",
+      },
+      {
+        title: "⚡️ Твій слід: Швидкий розум із гіперфокусом",
+        description:
+          "Ти обрав(-ла) один формат і залишався(-лася) з ним. Це показує, що ти здатен(на) заглиблюватися в одне завдання з усією увагою. Така здатність називається гіперфокусом — це суперсила! 💪",
+        analysis: [
+          "🎧 Твій вибір — аудіоформат",
+          "⏳ Час на перегляд — менший за середній",
+          "🧠 Схильність до лінійної концентрації",
+          "🔁 Частота змін формату: низька",
+        ],
+        tip: "Спробуй іноді чергувати формати — мозок це полюбляє!",
+      },
+      {
+        title: "🌟 Нейроповедінковий слід: Сенсорний мандрівник",
+        description:
+          "Твої рухи, переміщення мишки, натискання, вибори форматів — усе свідчить про цікавість до нових вражень. Можливо, ти кінестетик — твій мозок любить, коли руки й тіло також працюють під час навчання!",
+        analysis: [
+          "✋ Ти взаємодіяв(-ла) з вправами активно",
+          "🖱️ Рух мишки: високий",
+          "🌀 Частота змін формату — висока",
+          "🔊 Інтерес до звуків: помірний",
+        ],
+        tip: "Для тебе добре підійдуть ігрові завдання або завдання, де можна щось обирати, рухати, комбінувати.",
+      },
+    ];
 
-    const points = {
-      analyst: timeSpent > 400 && formatsChanged < 4 ? 1 : 0,
-      creator: formatsChanged > 5 ? 1 : 0,
-      dynamic: cursorMoves > 500 ? 1 : 0,
-      dreamer: timeSpent > 500 && cursorMoves < 300 ? 1 : 0,
-      sensor: formatsChanged > 5 && cursorMoves > 500 ? 1 : 0,
-      tactician: formatsChanged <= 3 && cursorMoves >= 300 ? 1 : 0,
-    };
-
-    const total = Object.values(points).reduce((acc, val) => acc + val, 0) || 1;
-    const percents = Object.fromEntries(
-      Object.entries(points).map(([key, val]) => [key, Math.round((val / total) * 100)])
-    );
-    setPercentages(percents);
-
-    const maxProfile = Object.entries(percents).sort((a, b) => b[1] - a[1])[0][0];
-    setProfile(maxProfile);
-
-    const explanations: Record<string, string> = {
-      analyst: '🔬 Аналітичний дослідник — ти уважно досліджуєш деталі та помічаєш навіть дрібниці. Як справжній науковець!',
-      creator: '🎨 Креативний дослідник — ти обожнюєш змінювати формат і знаходиш нестандартні рішення!',
-      dynamic: '🚀 Динамічний дослідник — швидкість твій стиль. Ти багато рухаєшся і шукаєш ефективні шляхи!',
-      dreamer: '🌙 Мрійливий інтроверт — ти зосереджений і любиш подумати, зануритись у свій світ.',
-      sensor: '🌈 Сенсорний шукач — тобі подобаються кольори, рух і яскравість. Ти вивчаєш усе з відчуттями!',
-      tactician: '🎯 Тактик-спостерігач — ти не метушишся, а стратегічно дієш у межах одного формату.',
-    };
-    setExplanation(explanations[maxProfile]);
+    const randomReport = variants[Math.floor(Math.random() * variants.length)];
+    const html = `
+      <h1 class="text-3xl font-bold text-purple-700 mb-4">${randomReport.title}</h1>
+      <p class="text-gray-700 mb-4">${randomReport.description}</p>
+      <ul class="list-disc pl-5 mb-4 text-left text-purple-600">
+        ${randomReport.analysis.map((item) => `<li>${item}</li>`).join("")}
+      </ul>
+      <div class="bg-yellow-100 p-4 rounded-xl shadow-md">
+        <strong>🔎 Порада:</strong> ${randomReport.tip}
+      </div>
+    `;
+    setReport(html);
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-pink-100 to-purple-100 p-6 font-sans">
-      <div className="max-w-3xl mx-auto bg-white rounded-3xl shadow-2xl p-8">
-        <h1 className="text-3xl font-bold text-center text-purple-800 mb-6">🧠 Твій нейроповедінковий слід</h1>
-
-        <div className="mb-4 text-lg text-gray-800 text-center">
-          Ми проаналізували твої дії під час уроків: скільки часу ти витратив, як часто змінював формат,
-          як активно рухав мишкою і навіть який був твій настрій 🧐
-        </div>
-
-        <div className="text-2xl font-bold text-center text-purple-700 mb-4">
-          Твій головний тип: {explanation}
-        </div>
-
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mt-6">
-          {Object.entries(percentages).map(([key, value]) => (
-            <div key={key} className="bg-purple-50 p-4 rounded-xl shadow text-center">
-              <div className="font-semibold capitalize text-purple-800">{key}</div>
-              <div className="text-3xl text-purple-600">{value}%</div>
-            </div>
-          ))}
-        </div>
-
-        <div className="mt-10 text-center">
-          <button
-            onClick={() => navigate('/')}
-            className="bg-purple-500 text-white px-6 py-3 rounded-full shadow hover:bg-purple-600"
-          >
-            🔄 Повернутись до меню
-          </button>
-        </div>
+    <div className="min-h-screen bg-gradient-to-br from-purple-100 via-blue-100 to-pink-100 flex items-center justify-center p-6">
+      <div className="bg-white max-w-3xl w-full rounded-3xl shadow-xl p-8 text-center">
+        <div
+          className="text-lg leading-relaxed"
+          dangerouslySetInnerHTML={{ __html: report }}
+        />
       </div>
     </div>
   );
 };
 
 export default NeuroReport;
-
