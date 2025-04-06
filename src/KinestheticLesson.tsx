@@ -3,12 +3,37 @@ import React, { useState } from 'react';
 const KinestheticLesson: React.FC = () => {
   const [mazeCompleted, setMazeCompleted] = useState(false);
   const [shapesSelected, setShapesSelected] = useState<string[]>([]);
+  const [pattern, setPattern] = useState<string[]>([]);
   const [patternComplete, setPatternComplete] = useState(false);
+  const [attemptsLeft, setAttemptsLeft] = useState(2);
 
   const toggleShape = (shape: string) => {
     setShapesSelected(prev =>
       prev.includes(shape) ? prev.filter(s => s !== shape) : [...prev, shape]
     );
+  };
+
+  const handlePatternClick = (color: string) => {
+    const newPattern = [...pattern, color];
+    setPattern(newPattern);
+
+    const correct = ['🔵', '🔴', '🟡', '🔵'];
+    const isCorrectSoFar = correct.slice(0, newPattern.length).every((v, i) => v === newPattern[i]);
+
+    if (!isCorrectSoFar) {
+      if (attemptsLeft > 0) {
+        setAttemptsLeft(prev => prev - 1);
+        alert('🚫 Щось пішло не так. Спробуй ще раз. Залишилось спроб: ' + (attemptsLeft));
+        setPattern([]);
+      } else {
+        alert('😢 Немає більше спроб. Наступного разу вийде краще!');
+      }
+      return;
+    }
+
+    if (newPattern.length === correct.length) {
+      setPatternComplete(true);
+    }
   };
 
   return (
@@ -24,7 +49,7 @@ const KinestheticLesson: React.FC = () => {
             <img
               src="/assets/pngtree-black-rectangular-labyrinth-vector-background-png-image_5070257.png"
               alt="Maze"
-              className="mx-auto rounded-xl w-full md:w-1/2"
+              className="mx-auto rounded-xl w-full md:w-1/2 cursor-pointer"
               onClick={() => setMazeCompleted(true)}
             />
             {mazeCompleted && <p className="mt-3 text-green-600 font-bold">✅ Молодець! Завдання виконано!</p>}
@@ -58,7 +83,7 @@ const KinestheticLesson: React.FC = () => {
             {['🔵', '🔴', '🟡'].map((color, idx) => (
               <button
                 key={idx}
-                onClick={() => setPatternComplete(true)}
+                onClick={() => handlePatternClick(color)}
                 className="text-4xl w-20 h-20 bg-white rounded-full shadow border hover:bg-gray-100"
               >
                 {color}
@@ -66,7 +91,7 @@ const KinestheticLesson: React.FC = () => {
             ))}
           </div>
           {patternComplete && (
-            <p className="text-center text-green-600 font-semibold">✅ Чудово! Візерунок повторено!</p>
+            <p className="text-center text-green-600 font-semibold">✅ Чудово! Візерунок повторено правильно!</p>
           )}
         </section>
       </div>
