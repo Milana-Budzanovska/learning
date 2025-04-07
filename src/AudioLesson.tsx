@@ -12,10 +12,25 @@ const AudioLessonPage: React.FC = () => {
     audio.play();
   };
 
+  const speak = (text: string) => {
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'en-US';
+    utterance.pitch = 1.2;
+    utterance.rate = 0.95;
+    const voices = speechSynthesis.getVoices();
+    const voice = voices.find(v => v.lang.includes('en') && v.name.toLowerCase().includes('google'));
+    if (voice) utterance.voice = voice;
+    speechSynthesis.speak(utterance);
+  };
+
+  const stopSpeaking = () => {
+    speechSynthesis.cancel();
+  };
+
   useEffect(() => {
-    const greeting = language === 'uk' 
-      ? '/assets/А зараз послухаємо запис.mp3' 
-      <source src="/assets/подкаст.mp3" type="audio/mpeg" />
+    const greeting = language === 'uk'
+      ? '/assets/А зараз послухаємо запис.mp3'
+      : '/assets/подкаст.mp3';
     playAudio(greeting);
   }, [language]);
 
@@ -30,11 +45,7 @@ const AudioLessonPage: React.FC = () => {
       };
       playAudio(fileMap[answer]);
     } else {
-      const utterance = new SpeechSynthesisUtterance(`You selected option ${answer}`);
-      utterance.lang = 'en-US';
-      utterance.pitch = 1.2;
-      utterance.rate = 0.95;
-      speechSynthesis.speak(utterance);
+      speak(`You selected option ${answer}`);
     }
   };
 
@@ -51,21 +62,6 @@ const AudioLessonPage: React.FC = () => {
         : speak("That’s okay! Mistakes help us learn. Let’s try again.");
       setFeedback(language === 'uk' ? '❌ Неправильно. Спробуй ще раз.' : "❌ Incorrect. Try again.");
     }
-  };
-
-  const speak = (text: string) => {
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'en-US';
-    utterance.pitch = 1.2;
-    utterance.rate = 0.95;
-    const voices = speechSynthesis.getVoices();
-    const voice = voices.find(v => v.lang.includes('en') && v.name.toLowerCase().includes('google'));
-    if (voice) utterance.voice = voice;
-    speechSynthesis.speak(utterance);
-  };
-
-  const stopSpeaking = () => {
-    speechSynthesis.cancel();
   };
 
   return (
@@ -99,7 +95,7 @@ const AudioLessonPage: React.FC = () => {
             🎧 {language === 'uk' ? 'Послухай запис' : 'Listen to the recording'}
           </h2>
           <audio controls className="w-full">
-            <source src="/assets/podcast.mp3" type="audio/mpeg" />
+            <source src="/assets/подкаст.mp3" type="audio/mpeg" />
             Your browser does not support audio.
           </audio>
           {language === 'uk' && (
