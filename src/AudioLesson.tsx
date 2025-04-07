@@ -15,7 +15,7 @@ const AudioLessonPage: React.FC = () => {
   useEffect(() => {
     const greeting = language === 'uk' 
       ? '/assets/А зараз послухаємо запис.mp3' 
-      : '/assets/подкаст.mp3';
+      <source src="/assets/подкаст.mp3" type="audio/mpeg" />
     playAudio(greeting);
   }, [language]);
 
