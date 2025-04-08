@@ -4,8 +4,10 @@ const NeuroReport: React.FC = () => {
   const [report, setReport] = useState("");
 
   useEffect(() => {
-    const variants = [
-      {
+    const reportKey = localStorage.getItem("report_result");
+
+    const variants: Record<string, any> = {
+      visual: {
         title: "🌈 Твій нейроповедінковий слід: Дослідник формату",
         description:
           "Ти дуже уважно досліджував(-ла) всі три формати. Часто переключав(-ла) стилі, що означає: ти прагнеш знайти найбільш зручний шлях для навчання. Це як науковець, що тестує різні прилади, перш ніж зібрати ракету! 🚀",
@@ -28,7 +30,7 @@ const NeuroReport: React.FC = () => {
           </div>
         `,
       },
-      {
+      audio: {
         title: "⚡️ Твій слід: Швидкий розум із гіперфокусом",
         description:
           "Ти обрав(-ла) один формат і залишався(-лася) з ним. Це показує, що ти здатен(на) заглиблюватися в одне завдання з усією увагою. Така здатність називається гіперфокусом — це суперсила! 💪",
@@ -51,7 +53,7 @@ const NeuroReport: React.FC = () => {
           </div>
         `,
       },
-      {
+      kinesthetic: {
         title: "🌟 Нейроповедінковий слід: Сенсорний мандрівник",
         description:
           "Твої рухи, переміщення мишки, натискання, вибори форматів — усе свідчить про цікавість до нових вражень. Можливо, ти кінестетик — твій мозок любить, коли руки й тіло також працюють під час навчання!",
@@ -77,19 +79,19 @@ const NeuroReport: React.FC = () => {
           </div>
         `,
       },
-    ];
+    };
 
-    const randomReport = variants[Math.floor(Math.random() * variants.length)];
+    const selected = reportKey && variants[reportKey] ? variants[reportKey] : variants.visual;
 
     const html = `
-      <h1 class="text-3xl font-bold text-purple-700 mb-4">${randomReport.title}</h1>
-      <p class="text-gray-700 mb-4">${randomReport.description}</p>
+      <h1 class="text-3xl font-bold text-purple-700 mb-4">${selected.title}</h1>
+      <p class="text-gray-700 mb-4">${selected.description}</p>
       <ul class="list-disc pl-5 mb-4 text-left text-purple-600">
-        ${randomReport.analysis.map((item) => `<li>${item}</li>`).join("")}
+        ${selected.analysis.map((item) => `<li>${item}</li>`).join("")}
       </ul>
-      ${randomReport.chart}
+      ${selected.chart}
       <div class="bg-yellow-100 p-4 rounded-xl shadow-md mt-6 text-left">
-        <strong>🔎 Порада:</strong> ${randomReport.tip}
+        <strong>🔎 Порада:</strong> ${selected.tip}
       </div>
     `;
     setReport(html);
