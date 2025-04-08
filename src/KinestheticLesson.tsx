@@ -77,7 +77,7 @@ const KinestheticLesson: React.FC = () => {
 
   const handlePatternClick = (color: string) => {
     const audioFile = colorAudios[color];
-    if (language === 'uk' && audioFile) playAudio(audioFile);
+    if (audioFile) playAudio(audioFile);
 
     const newPattern = [...pattern, color];
     setPattern(newPattern);
