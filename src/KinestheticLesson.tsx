@@ -3,70 +3,52 @@ import React, { useState, useEffect } from 'react';
 const KinestheticLesson: React.FC = () => {
   const [mazeCompleted, setMazeCompleted] = useState(false);
   const [shapesSelected, setShapesSelected] = useState<string[]>([]);
+  const [incorrectShapes, setIncorrectShapes] = useState<string[]>([]);
   const [pattern, setPattern] = useState<string[]>([]);
   const [patternComplete, setPatternComplete] = useState(false);
   const [attemptsLeft, setAttemptsLeft] = useState(2);
   const [language, setLanguage] = useState<'uk' | 'en'>('uk');
 
-  const texts = {
-    title: language === 'uk' ? 'Кінестетичний урок' : 'Kinesthetic Lesson',
-    mazeTitle: language === 'uk' ? 'Проведи пальцем лабіринтом' : 'Trace the maze',
-    mazeText: language === 'uk'
-      ? 'Уяви, що твій палець – це олівець. Повільно проведи його по уявному лабіринту (на екрані), не поспішаючи.'
-      : 'Imagine your finger is a pencil. Slowly trace the invisible maze on the screen.',
-    mazeDone: language === 'uk' ? '✅ Молодець! Завдання виконано!' : '✅ Well done! Task complete!',
-
-    shapeTitle: language === 'uk' ? 'Вибери фігури' : 'Pick the shapes',
-    shapeHint: language === 'uk'
-      ? 'Обери ті фігури, які мають закруглені краї. Натисни на них.'
-      : 'Choose the shapes with rounded edges. Click on them.',
-
-    patternTitle: language === 'uk' ? 'Відтвори шаблон' : 'Repeat the pattern',
-    patternHint: language === 'uk'
-      ? 'Повторюй послідовність: 🔵🔴🟡🔵...'
-      : 'Repeat the sequence: 🔵🔴🟡🔵...',
-
-    patternCorrect: language === 'uk'
-      ? '✅ Чудово! Візерунок повторено правильно!'
-      : '✅ Great! Pattern repeated correctly!',
-
-    attemptsLeftMsg: (a: number) =>
-      language === 'uk'
-        ? `🚫 Щось пішло не так. Спробуй ще раз. Залишилось спроб: ${a}`
-        : `🚫 Something went wrong. Try again. Attempts left: ${a}`,
-
-    noAttempts: language === 'uk'
-      ? '😢 Немає більше спроб. Наступного разу вийде краще!'
-      : '😢 No more attempts. You’ll do better next time!',
-
-    stop: language === 'uk' ? '🛑 Зупинити мовлення' : '🛑 Stop voice',
-    langSwitch: language === 'uk' ? '🌐 English version' : '🌐 Українська версія',
+  const playAudio = (src: string) => {
+    const audio = new Audio(src);
+    audio.play();
   };
 
   const speak = (text: string) => {
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = language === 'uk' ? 'uk-UA' : 'en-US';
-    utterance.pitch = 1.2;
-    utterance.rate = 0.95;
-    utterance.volume = 1;
+    if (language === 'en') {
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'en-US';
+      utterance.pitch = 1.2;
+      utterance.rate = 0.95;
+      utterance.volume = 1;
 
-    const voices = speechSynthesis.getVoices();
-    const voice = voices.find(v =>
-      language === 'uk'
-        ? v.lang === 'uk-UA' || v.name.toLowerCase().includes('google')
-        : v.lang === 'en-US' && v.name.toLowerCase().includes('google')
-    );
-    if (voice) utterance.voice = voice;
-    speechSynthesis.cancel();
-    speechSynthesis.speak(utterance);
+      const voices = speechSynthesis.getVoices();
+      const voice = voices.find(v => v.lang === 'en-US' && v.name.toLowerCase().includes('google'));
+      if (voice) utterance.voice = voice;
+      speechSynthesis.cancel();
+      speechSynthesis.speak(utterance);
+    }
   };
 
   const stopSpeaking = () => speechSynthesis.cancel();
 
   const toggleShape = (shape: string) => {
-    setShapesSelected(prev =>
-      prev.includes(shape) ? prev.filter(s => s !== shape) : [...prev, shape]
-    );
+    setShapesSelected(prev => {
+      const isSelected = prev.includes(shape);
+      const updated = isSelected ? prev.filter(s => s !== shape) : [...prev, shape];
+
+      if (!isSelected) {
+        const correctShapes = language === 'uk' ? ['Коло', 'Овал', 'Хмара'] : ['Circle', 'Oval', 'Cloud'];
+        if (correctShapes.includes(shape)) {
+          playAudio('/assets/Молодець, правильна відповідь .mp3');
+        } else {
+          playAudio('/assets/ойой,_помилка,_не_засмучуйся,_спробуй_іще.mp3');
+          setIncorrectShapes(prevIncorrect => [...prevIncorrect, shape]);
+        }
+      }
+
+      return updated;
+    });
   };
 
   const handlePatternClick = (color: string) => {
@@ -79,10 +61,14 @@ const KinestheticLesson: React.FC = () => {
     if (!isCorrectSoFar) {
       if (attemptsLeft > 0) {
         setAttemptsLeft(prev => prev - 1);
-        alert(texts.attemptsLeftMsg(attemptsLeft));
+        alert(language === 'uk'
+          ? `🚫 Щось пішло не так. Спробуй ще раз. Залишилось спроб: ${attemptsLeft}`
+          : `🚫 Something went wrong. Try again. Attempts left: ${attemptsLeft}`);
         setPattern([]);
       } else {
-        alert(texts.noAttempts);
+        alert(language === 'uk'
+          ? '😢 Немає більше спроб. Наступного разу вийде краще!'
+          : '😢 No more attempts. You’ll do better next time!');
       }
       return;
     }
@@ -99,34 +85,32 @@ const KinestheticLesson: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-yellow-100 to-pink-100 p-6 font-sans">
       <div className="max-w-5xl mx-auto bg-white rounded-3xl shadow-xl p-8">
-        {/* Language Button */}
         <div className="flex justify-between mb-4">
           <img src="/assets/flik.png" alt="Flik" className="w-20 h-20 rounded-full" />
           <button
             onClick={() => setLanguage(language === 'uk' ? 'en' : 'uk')}
             className="bg-purple-200 hover:bg-purple-300 text-purple-800 font-semibold py-2 px-4 rounded-full shadow"
           >
-            {texts.langSwitch}
+            {language === 'uk' ? '🌐 English version' : '🌐 Українська версія'}
           </button>
         </div>
 
-        {/* Title */}
-        <h1
-          className="text-3xl font-bold text-purple-700 text-center mb-8"
-          onMouseEnter={() => speak(texts.title)}
-        >
-          {texts.title}
+        <h1 className="text-3xl font-bold text-purple-700 text-center mb-8">
+          {language === 'uk' ? 'Кінестетичний урок' : 'Kinesthetic Lesson'}
         </h1>
 
-        {/* Maze */}
         <section className="mb-12">
-          <h2 className="text-2xl font-bold text-purple-600 mb-4">🌀 {texts.mazeTitle}</h2>
+          <h2 className="text-2xl font-bold text-purple-600 mb-4 cursor-pointer" onClick={() => language === 'uk' ? playAudio('/assets/проведи пальцем лабіринтом.mp3') : speak('Trace the maze')}>
+            🌀 {language === 'uk' ? 'Проведи пальцем лабіринтом' : 'Trace the maze'}
+          </h2>
           <div className="bg-purple-100 p-6 rounded-xl shadow-md text-center">
             <p
-              className="mb-4 text-lg"
-              onMouseEnter={() => speak(texts.mazeText)}
+              className="mb-4 text-lg cursor-pointer"
+              onClick={() => language === 'uk' ? playAudio('/assets/уяви що твій палець..mp3') : speak('Imagine your finger is a pencil. Slowly trace the invisible maze on the screen.')}
             >
-              {texts.mazeText}
+              {language === 'uk'
+                ? 'Уяви, що твій палець – це олівець. Повільно проведи його по уявному лабіринту (на екрані), не поспішаючи.'
+                : 'Imagine your finger is a pencil. Slowly trace the invisible maze on the screen.'}
             </p>
             <img
               src="/assets/pngtree-black-rectangular-labyrinth-vector-background-png-image_5070257.png"
@@ -135,51 +119,61 @@ const KinestheticLesson: React.FC = () => {
               onClick={() => setMazeCompleted(true)}
             />
             {mazeCompleted && (
-              <p className="mt-3 text-green-600 font-bold">{texts.mazeDone}</p>
+              <p className="mt-3 text-green-600 font-bold">
+                {language === 'uk' ? '✅ Молодець! Завдання виконано!' : '✅ Well done! Task complete!'}
+              </p>
             )}
           </div>
         </section>
 
-        {/* Shapes */}
         <section className="mb-12">
-          <h2 className="text-2xl font-bold text-pink-600 mb-4">🔺 {texts.shapeTitle}</h2>
-          <p
-            className="text-center mb-3"
-            onMouseEnter={() => speak(texts.shapeHint)}
-          >
-            {texts.shapeHint}
+          <h2 className="text-2xl font-bold text-pink-600 mb-4 cursor-pointer" onClick={() => language === 'uk' ? playAudio('/assets/вибери фігуру.mp3') : speak('Pick the shapes')}>
+            🔺 {language === 'uk' ? 'Вибери фігури' : 'Pick the shapes'}
+          </h2>
+          <p className="text-center mb-3">
+            {language === 'uk'
+              ? 'Обери ті фігури, які мають закруглені краї. Натисни на них.'
+              : 'Choose the shapes with rounded edges. Click on them.'}
           </p>
           <div className="flex flex-wrap justify-center gap-6">
-            {shapeOptions.map((shape, idx) => (
-              <div
-                key={idx}
-                onClick={() => toggleShape(shape)}
-                onMouseEnter={() => speak(shape)}
-                className={`cursor-pointer w-32 h-32 flex items-center justify-center rounded-2xl border-4 text-lg font-bold shadow-md transition ${
-                  shapesSelected.includes(shape) ? 'bg-green-200 border-green-600' : 'bg-white border-gray-300'
-                }`}
-              >
-                {shape}
-              </div>
-            ))}
+            {shapeOptions.map((shape, idx) => {
+              const isCorrect = (language === 'uk' ? ['Коло', 'Овал', 'Хмара'] : ['Circle', 'Oval', 'Cloud']).includes(shape);
+              const isIncorrect = incorrectShapes.includes(shape);
+              return (
+                <div
+                  key={idx}
+                  onClick={() => toggleShape(shape)}
+                  className={`cursor-pointer w-32 h-32 flex items-center justify-center rounded-2xl border-4 text-lg font-bold shadow-md transition ${
+                    shapesSelected.includes(shape)
+                      ? isCorrect
+                        ? 'bg-green-200 border-green-600'
+                        : isIncorrect
+                          ? 'bg-red-100 border-red-300'
+                          : 'bg-white border-gray-300'
+                      : 'bg-white border-gray-300'
+                  }`}
+                >
+                  {shape}
+                </div>
+              );
+            })}
           </div>
         </section>
 
-        {/* Pattern Game */}
         <section className="mb-12">
-          <h2 className="text-2xl font-bold text-blue-600 mb-4">🎨 {texts.patternTitle}</h2>
-          <p
-            className="text-center mb-3"
-            onMouseEnter={() => speak(texts.patternHint)}
-          >
-            {texts.patternHint}
+          <h2 className="text-2xl font-bold text-blue-600 mb-4 cursor-pointer" onClick={() => language === 'uk' ? playAudio('/assets/відтвори шаблон.mp3') : speak('Repeat the pattern')}>
+            🎨 {language === 'uk' ? 'Відтвори шаблон' : 'Repeat the pattern'}
+          </h2>
+          <p className="text-center mb-3">
+            {language === 'uk'
+              ? 'Повторюй послідовність: 🔵🔴🟡🔵...'
+              : 'Repeat the sequence: 🔵🔴🟡🔵...'}
           </p>
           <div className="flex justify-center gap-4 mb-4">
             {['🔵', '🔴', '🟡'].map((color, idx) => (
               <button
                 key={idx}
                 onClick={() => handlePatternClick(color)}
-                onMouseEnter={() => speak(color)}
                 className="text-4xl w-20 h-20 bg-white rounded-full shadow border hover:bg-gray-100"
               >
                 {color}
@@ -188,18 +182,19 @@ const KinestheticLesson: React.FC = () => {
           </div>
           {patternComplete && (
             <p className="text-center text-green-600 font-semibold">
-              {texts.patternCorrect}
+              {language === 'uk'
+                ? '✅ Чудово! Візерунок повторено правильно!'
+                : '✅ Great! Pattern repeated correctly!'}
             </p>
           )}
         </section>
 
-        {/* Stop Voice */}
         <div className="flex justify-center mt-6">
           <button
             onClick={stopSpeaking}
             className="bg-red-500 text-white px-4 py-2 rounded-full hover:bg-red-600 transition"
           >
-            {texts.stop}
+            {language === 'uk' ? '🛑 Зупинити мовлення' : '🛑 Stop voice'}
           </button>
         </div>
       </div>
