@@ -41,7 +41,20 @@ const LearningMenu = () => {
 
   const handleSelect = (type: string) => {
     localStorage.setItem(`visited_${type}`, "true");
+    localStorage.setItem(`time_${type}_start`, String(Date.now()));
     navigate(`/${type}?studentId=${studentId}`);
+  };
+
+  const handleReport = () => {
+    const end = Date.now();
+    const times = ["visual", "audio", "kinesthetic"].map(type => {
+      const start = Number(localStorage.getItem(`time_${type}_start`) || "0");
+      const duration = end - start;
+      return { type, duration: isNaN(duration) ? 0 : duration };
+    });
+    const max = times.reduce((prev, curr) => curr.duration > prev.duration ? curr : prev, times[0]);
+    localStorage.setItem("report_result", max.type);
+    navigate("/neuro-report");
   };
 
   const allVisited = Object.values(visitedLessons).every(Boolean);
@@ -87,7 +100,7 @@ const LearningMenu = () => {
 
       {allVisited && (
         <button
-          onClick={() => navigate("/neuro-report")}
+          onClick={handleReport}
           className="mt-10 bg-purple-700 hover:bg-purple-900 text-white px-6 py-3 rounded-full shadow-lg transition"
         >
           {t.reportButton}
