@@ -2,6 +2,19 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ====== Шрифт для дислексії ====== */
+@font-face {
+  font-family: 'OpenDyslexic';
+  src: url('/assets/fonts/OpenDyslexic-Regular.otf') format('opentype');
+  font-display: swap;
+}
+
+.dyslexia-mode * {
+  font-family: 'OpenDyslexic', sans-serif !important;
+  letter-spacing: 0.05em;
+}
+
+/* ====== Компоненти ====== */
 @layer components {
   .main-button {
     @apply bg-gradient-to-r from-purple-400 to-pink-400 text-white font-semibold py-2 px-6 rounded-full shadow-lg hover:scale-105 transition;
