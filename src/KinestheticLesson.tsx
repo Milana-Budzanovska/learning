@@ -155,7 +155,10 @@ const KinestheticLesson: React.FC = () => {
           >
             🔺 {language === 'uk' ? 'Вибери фігури' : 'Pick the shapes'}
           </h2>
-          <p className="text-center mb-3">
+          <p
+            className="text-center mb-3 cursor-pointer"
+            onClick={() => language === 'uk' ? playAudio('/assets/оберіть ті фігури, які мають.mp3') : speak('Choose the shapes with rounded edges.')}
+          >
             {language === 'uk'
               ? 'Обери ті фігури, які мають закруглені краї. Натисни на них.'
               : 'Choose the shapes with rounded edges. Click on them.'}
@@ -180,10 +183,16 @@ const KinestheticLesson: React.FC = () => {
         </section>
 
         <section className="mb-12">
-          <h2 className="text-2xl font-bold text-blue-600 mb-4 cursor-pointer" onClick={() => language === 'uk' ? playAudio('/assets/відтвори шаблон.mp3') : speak('Repeat the pattern')}>
+          <h2
+            className="text-2xl font-bold text-blue-600 mb-4 cursor-pointer"
+            onClick={() => language === 'uk' ? playAudio('/assets/відтвори шаблон.mp3') : speak('Repeat the pattern')}
+          >
             🎨 {language === 'uk' ? 'Відтвори шаблон' : 'Repeat the pattern'}
           </h2>
-          <p className="text-center mb-3">
+          <p
+            className="text-center mb-3 cursor-pointer"
+            onClick={() => language === 'uk' ? playAudio('/assets/повторюю послідовність.mp3') : speak('Repeat the sequence: blue, red, yellow, blue.')}
+          >
             {language === 'uk'
               ? 'Повторюй послідовність: 🔵🔴🟡🔵...'
               : 'Repeat the sequence: 🔵🔴🟡🔵...'}
