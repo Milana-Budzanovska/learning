@@ -28,10 +28,10 @@ const AudioLessonPage: React.FC = () => {
   };
 
   useEffect(() => {
-    const greeting = language === 'uk'
-      ? '/assets/А зараз послухаємо запис.mp3'
-      : '/assets/подкаст.mp3';
-    playAudio(greeting);
+    if (language === 'uk') {
+      const greeting = '/assets/А зараз послухаємо запис.mp3';
+      playAudio(greeting);
+    }
   }, [language]);
 
   const handleAnswer = (answer: string) => {
@@ -176,7 +176,7 @@ const AudioLessonPage: React.FC = () => {
               onClick={() => language === 'uk' && playAudio('/assets/Якщо_ти_хочеш_дізнатися_більше_пограй_в.mp3')}
               className="block text-purple-600 underline hover:text-purple-800"
             >
-              ▶️ {language === 'uk' ? 'Гра "Вгадай емоцію"' : 'Game "Guess the emotion"'}
+              ▶️ {language === 'uk' ? 'Гра \"Вгадай емоцію\"' : 'Game \"Guess the emotion\"'}
             </a>
             <a
               href="https://www.youtube.com/watch?v=jh7wLjqI5PY"
