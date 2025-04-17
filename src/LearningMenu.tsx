@@ -13,7 +13,7 @@ const translations = {
   en: {
     title: "Choose your preferred learning format",
     visual: "For Visual (Eyes see)",
-    audio: "For Auditory (Ears hear)",
+    audio: "For Аudials (Ears hear)",
     kinesthetic: "For Kinesthetic (Hands do)",
     reportButton: "🧠 View Neuro Report",
     langSwitch: "УКР"
