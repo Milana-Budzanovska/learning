@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import GradeMenu from './GradeMenu';
 import LearningMenu from './LearningMenu';
 import VisualLesson from './VisualLesson';
 import AudioLesson from './AudioLesson';
@@ -36,7 +37,8 @@ function App() {
     <Router>
       <DyslexiaToggle />
       <Routes>
-        <Route path="/" element={<LearningMenu />} />
+        <Route path="/" element={<GradeMenu />} />
+        <Route path="/learning" element={<LearningMenu />} />
         <Route path="/visual" element={<VisualLesson />} />
         <Route path="/audio" element={<AudioLesson />} />
         <Route path="/kinesthetic" element={<KinestheticLesson />} />
