@@ -31,6 +31,8 @@ const AudioLessonPage: React.FC = () => {
     if (language === 'uk') {
       const greeting = '/assets/А зараз послухаємо запис.mp3';
       playAudio(greeting);
+    } else {
+      speak('Audio Lesson. Listen to the recording. Check yourself. What does neurodiversity mean?');
     }
   }, [language]);
 
@@ -45,7 +47,12 @@ const AudioLessonPage: React.FC = () => {
       };
       playAudio(fileMap[answer]);
     } else {
-      speak(`You selected option ${answer}`);
+      const labels = {
+        A: 'A child who speaks many languages',
+        B: 'A brain that works differently from most',
+        C: 'A child who falls asleep quickly',
+      };
+      speak(`You selected option ${answer}. ${labels[answer]}`);
     }
   };
 
@@ -77,7 +84,10 @@ const AudioLessonPage: React.FC = () => {
       </div>
 
       <div className="max-w-4xl mx-auto bg-white rounded-3xl shadow-xl p-8">
-        <h1 className="text-3xl font-bold text-center text-purple-700 mb-6">
+        <h1
+          className="text-3xl font-bold text-center text-purple-700 mb-6"
+          onClick={() => language === 'en' && speak('Audio Lesson')}
+        >
           {language === 'uk' ? 'Аудіоурок' : 'Audio Lesson'}
         </h1>
 
@@ -91,7 +101,10 @@ const AudioLessonPage: React.FC = () => {
         </div>
 
         <div className="bg-purple-100 p-6 rounded-xl shadow-md mb-8">
-          <h2 className="text-xl font-semibold text-purple-700 mb-4">
+          <h2
+            className="text-xl font-semibold text-purple-700 mb-4"
+            onClick={() => language === 'en' && speak('Listen to the recording')}
+          >
             🎧 {language === 'uk' ? 'Послухай запис' : 'Listen to the recording'}
           </h2>
           <audio controls className="w-full">
@@ -108,7 +121,10 @@ const AudioLessonPage: React.FC = () => {
           )}
         </div>
 
-        <div className="bg-pink-100 p-6 rounded-xl shadow-md mb-8">
+        <div
+          className="bg-pink-100 p-6 rounded-xl shadow-md mb-8"
+          onClick={() => language === 'en' && speak('Check Yourself. What does neurodiversity mean?')}
+        >
           <h2 className="text-xl font-semibold text-purple-700 mb-4">
             📝 {language === 'uk' ? 'Перевір себе' : 'Check Yourself'}
           </h2>
@@ -116,28 +132,43 @@ const AudioLessonPage: React.FC = () => {
             {language === 'uk' ? 'Що таке нейровідмінність?' : 'What does neurodiversity mean?'}
           </p>
           <ul className="space-y-2">
-            {['A', 'B', 'C'].map(option => (
-              <li key={option}>
-                <button
-                  onClick={() => handleAnswer(option)}
-                  disabled={submitted}
-                  className={`w-full p-3 rounded-lg shadow hover:bg-purple-50 ${selected === option ? 'bg-purple-200' : 'bg-white'}`}
-                >
-                  {option}) {language === 'uk'
-                    ? option === 'A'
-                      ? 'Дитина, що володіє багатьма мовами'
-                      : option === 'B'
-                      ? 'Мозок, який працює не так, як у всіх'
-                      : 'Дитина, яка швидко засинає'
-                    : option === 'A'
-                    ? 'A child who speaks many languages'
-                    : option === 'B'
-                    ? 'A brain that works differently from most'
-                    : 'A child who falls asleep quickly'}
-                </button>
-              </li>
-            ))}
+            {['A', 'B', 'C'].map(option => {
+              const labelEn =
+                option === 'A'
+                  ? 'A child who speaks many languages'
+                  : option === 'B'
+                  ? 'A brain that works differently from most'
+                  : 'A child who falls asleep quickly';
+
+              const labelUk =
+                option === 'A'
+                  ? 'Дитина, що володіє багатьма мовами'
+                  : option === 'B'
+                  ? 'Мозок, який працює не так, як у всіх'
+                  : 'Дитина, яка швидко засинає';
+
+              return (
+                <li key={option}>
+                  <button
+                    onClick={() => {
+                      handleAnswer(option);
+                      if (language === 'en') speak(labelEn);
+                    }}
+                    onMouseEnter={() => {
+                      if (language === 'en') speak(labelEn);
+                    }}
+                    disabled={submitted}
+                    className={`w-full p-3 rounded-lg shadow hover:bg-purple-50 ${
+                      selected === option ? 'bg-purple-200' : 'bg-white'
+                    }`}
+                  >
+                    {option}) {language === 'uk' ? labelUk : labelEn}
+                  </button>
+                </li>
+              );
+            })}
           </ul>
+
           {!submitted && selected && (
             <button
               onClick={handleSubmit}
@@ -147,7 +178,12 @@ const AudioLessonPage: React.FC = () => {
             </button>
           )}
           {submitted && (
-            <p className="mt-4 text-lg text-purple-700 font-semibold">{feedback}</p>
+            <p
+              className="mt-4 text-lg text-purple-700 font-semibold"
+              onClick={() => language === 'en' && speak(feedback)}
+            >
+              {feedback}
+            </p>
           )}
           <button
             onClick={() =>
@@ -163,6 +199,7 @@ const AudioLessonPage: React.FC = () => {
 
         <div
           className="bg-white p-6 rounded-xl shadow-inner border-2 border-purple-200"
+          onClick={() => language === 'en' && speak('Extra Materials')}
           onMouseEnter={() => language === 'uk' && playAudio('/assets/про екстра.mp3')}
         >
           <h2 className="text-xl font-semibold text-purple-700 mb-4">
@@ -173,16 +210,20 @@ const AudioLessonPage: React.FC = () => {
               href="https://learningapps.org/display?v=pk6hxv9oa24"
               target="_blank"
               rel="noreferrer"
-              onClick={() => language === 'uk' && playAudio('/assets/Якщо_ти_хочеш_дізнатися_більше_пограй_в.mp3')}
+              onClick={() => language === 'uk'
+                ? playAudio('/assets/Якщо_ти_хочеш_дізнатися_більше_пограй_в.mp3')
+                : speak('Game: Guess the emotion')}
               className="block text-purple-600 underline hover:text-purple-800"
             >
-              ▶️ {language === 'uk' ? 'Гра \"Вгадай емоцію\"' : 'Game \"Guess the emotion\"'}
+              ▶️ {language === 'uk' ? 'Гра "Вгадай емоцію"' : 'Game "Guess the emotion"'}
             </a>
             <a
               href="https://www.youtube.com/watch?v=jh7wLjqI5PY"
               target="_blank"
               rel="noreferrer"
-              onClick={() => language === 'uk' && playAudio('/assets/Якщо_ти_хочеш_дізнатися_більше_пограй_в.mp3')}
+              onClick={() => language === 'uk'
+                ? playAudio('/assets/Якщо_ти_хочеш_дізнатися_більше_пограй_в.mp3')
+                : speak('Video about neurodiversity')}
               className="block text-purple-600 underline hover:text-purple-800"
             >
               📺 {language === 'uk' ? 'Відео про нейровідмінність' : 'Video about neurodiversity'}
