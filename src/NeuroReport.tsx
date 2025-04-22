@@ -1,148 +1,148 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 const translations = {
   uk: {
-    title: "Обери зручний формат навчання",
-    visual: "Для візуала (очі бачать)",
-    audio: "Для аудіала (вуха чують)",
-    kinesthetic: "Для кінестетика (ручки роблять)",
-    reportButton: "🧠 Переглянути нейрозвіт",
-    langSwitch: "ENG",
-    loadingText: "Проводиться аналіз активності: рухи миші, час фокусу, натискання..."
+    tip: "🔎 Порада:",
+    switchLang: "ENG"
   },
   en: {
-    title: "Choose your preferred learning format",
-    visual: "For Visual (Eyes see)",
-    audio: "For Аudials (Ears hear)",
-    kinesthetic: "For Kinesthetic (Hands do)",
-    reportButton: "🧠 View Neuro Report",
-    langSwitch: "УКР",
-    loadingText: "Analyzing your activity: mouse movements, focus time, clicks..."
+    tip: "🔎 Tip:",
+    switchLang: "УКР"
   }
 };
 
-const LearningMenu = () => {
-  const navigate = useNavigate();
-  const studentId = localStorage.getItem("studentId") || "123";
-
-  const [language, setLanguage] = useState<"uk" | "en">("uk");
-  const [visitedLessons, setVisitedLessons] = useState({
-    visual: false,
-    audio: false,
-    kinesthetic: false,
-  });
-  const [showLoader, setShowLoader] = useState(false);
+const NeuroReport: React.FC = () => {
+  const [report, setReport] = useState("");
+  const [lang, setLang] = useState<"uk" | "en">("uk");
 
   useEffect(() => {
-    const visual = localStorage.getItem("visited_visual") === "true";
-    const audio = localStorage.getItem("visited_audio") === "true";
-    const kinesthetic = localStorage.getItem("visited_kinesthetic") === "true";
-    setVisitedLessons({ visual, audio, kinesthetic });
-  }, []);
+    const reportKey = localStorage.getItem("report_result");
 
-  const handleSelect = (type: string) => {
-    localStorage.setItem(`visited_${type}`, "true");
-    localStorage.setItem(`time_${type}_start`, String(Date.now()));
-    navigate(`/${type}?studentId=${studentId}`);
-  };
+    const variants: Record<string, any> = {
+      visual: {
+        title: {
+          uk: "🌈 Твій нейроповедінковий слід: Дослідник формату",
+          en: "🌈 Your Neurobehavioral Trace: Format Explorer"
+        },
+        description: {
+          uk: "Ти дуже уважно досліджував(-ла) всі три формати...",
+          en: "You thoroughly explored all three formats..."
+        },
+        analysis: {
+          uk: [
+            "🧩 Високий рівень адаптивності",
+            "⏱️ Час навчання: оптимальний",
+            "🎨 Ти надаєш перевагу візуальним кольорам",
+            "🎯 Частота переходів між форматами: 5+"
+          ],
+          en: [
+            "🧩 High adaptability",
+            "⏱️ Optimal learning time",
+            "🎨 Preference for visual elements",
+            "🎯 Format switching frequency: 5+"
+          ]
+        },
+        tip: {
+          uk: "Тобі можуть сподобатись завдання з візуалізацією...",
+          en: "You might enjoy visualized and exploratory tasks!"
+        },
+        chart: `...` // Keep chart as is for simplicity
+      },
+      audio: {
+        title: {
+          uk: "⚡️ Твій слід: Швидкий розум із гіперфокусом",
+          en: "⚡️ Your Trace: Fast Mind with Hyperfocus"
+        },
+        description: {
+          uk: "Ти обрав(-ла) один формат...",
+          en: "You picked one format and stayed with it..."
+        },
+        analysis: {
+          uk: [
+            "🎧 Твій вибір — аудіоформат",
+            "⏳ Час на перегляд — менший за середній",
+            "🧠 Схильність до лінійної концентрації",
+            "🔁 Частота змін формату: низька"
+          ],
+          en: [
+            "🎧 Your choice — audio format",
+            "⏳ Viewing time — below average",
+            "🧠 Inclination to linear concentration",
+            "🔁 Format switching: low"
+          ]
+        },
+        tip: {
+          uk: "Спробуй іноді чергувати формати...",
+          en: "Try alternating formats — your brain likes it!"
+        },
+        chart: `...`
+      },
+      kinesthetic: {
+        title: {
+          uk: "🌟 Нейроповедінковий слід: Сенсорний мандрівник",
+          en: "🌟 Neurobehavioral Trace: Sensory Explorer"
+        },
+        description: {
+          uk: "Твої рухи, переміщення мишки...",
+          en: "Your movements, mouse actions..."
+        },
+        analysis: {
+          uk: [
+            "✋ Ти взаємодіяв(-ла) з вправами активно",
+            "🖱️ Рух мишки: високий",
+            "🌀 Частота змін формату — висока",
+            "🔊 Інтерес до звуків: помірний"
+          ],
+          en: [
+            "✋ You interacted with tasks actively",
+            "🖱️ Mouse activity: high",
+            "🌀 Format switching: high",
+            "🔊 Interest in sound: moderate"
+          ]
+        },
+        tip: {
+          uk: "Для тебе добре підійдуть ігрові завдання...",
+          en: "Game-based and interactive tasks work great for you."
+        },
+        chart: `...`
+      }
+    };
 
-  const handleReport = () => {
-    setShowLoader(true);
-    setTimeout(() => {
-      const end = Date.now();
-      const times = ["visual", "audio", "kinesthetic"].map(type => {
-        const start = Number(localStorage.getItem(`time_${type}_start`) || "0");
-        const duration = end - start;
-        return { type, duration: isNaN(duration) ? 0 : duration };
-      });
-      const max = times.reduce((prev, curr) => curr.duration > prev.duration ? curr : prev, times[0]);
-      localStorage.setItem("report_result", max.type);
-      navigate("/neuro-report");
-    }, 4000);
-  };
+    const selectedKey = reportKey && variants[reportKey] ? reportKey : "visual";
+    const selected = variants[selectedKey];
 
-  const allVisited = Object.values(visitedLessons).every(Boolean);
-  const t = translations[language];
+    const html = `
+      <h1 class="text-3xl font-bold text-purple-700 mb-4">${selected.title[lang]}</h1>
+      <p class="text-gray-700 mb-4">${selected.description[lang]}</p>
+      <ul class="list-disc pl-5 mb-4 text-left text-purple-600">
+        ${selected.analysis[lang].map((item) => `<li>${item}</li>`).join("")}
+      </ul>
+      ${selected.chart}
+      <div class="bg-yellow-100 p-4 rounded-xl shadow-md mt-6 text-left">
+        <strong>${translations[lang].tip}</strong> ${selected.tip[lang]}
+      </div>
+    `;
+    setReport(html);
+  }, [lang]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-100 via-blue-100 to-purple-100 flex flex-col items-center justify-center p-4">
-      <div className="self-end mr-6 mb-4">
+    <div className="min-h-screen bg-gradient-to-br from-purple-100 via-blue-100 to-pink-100 flex flex-col items-center justify-center p-6">
+      <div className="self-end mb-4">
         <button
-          onClick={() => setLanguage(language === "uk" ? "en" : "uk")}
+          onClick={() => setLang(lang === "uk" ? "en" : "uk")}
           className="bg-white px-4 py-2 rounded-full shadow hover:bg-gray-100"
         >
-          {t.langSwitch}
+          {translations[lang].switchLang}
         </button>
       </div>
-
-      {!showLoader ? (
-        <>
-          <h1 className="text-3xl font-bold text-purple-800 mb-6">{t.title}</h1>
-
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 w-full max-w-4xl">
-            <LessonButton
-              type="visual"
-              title={t.visual}
-              color="text-purple-600"
-              image="/assets/1000043625-removebg-preview.png"
-              onClick={handleSelect}
-            />
-            <LessonButton
-              type="audio"
-              title={t.audio}
-              color="text-pink-600"
-              image="/assets/IMG_20250307_010159_215.png"
-              onClick={handleSelect}
-            />
-            <LessonButton
-              type="kinesthetic"
-              title={t.kinesthetic}
-              color="text-yellow-600"
-              image="/assets/1000043681-fotor-bg-remover-20250312224319.png"
-              onClick={handleSelect}
-            />
-          </div>
-
-          {allVisited && (
-            <button
-              onClick={handleReport}
-              className="mt-10 bg-gradient-to-r from-purple-600 to-pink-500 text-white text-lg px-8 py-3 rounded-full shadow-lg animate-pulse hover:scale-105 transition"
-            >
-              {t.reportButton}
-            </button>
-          )}
-        </>
-      ) : (
-        <div className="flex flex-col items-center justify-center text-center mt-20">
-          <div className="text-xl text-purple-700 mb-6 animate-pulse">{t.loadingText}</div>
-          <div className="w-20 h-20 border-8 border-purple-300 border-t-purple-600 rounded-full animate-spin"></div>
-        </div>
-      )}
+      <div className="bg-white max-w-3xl w-full rounded-3xl shadow-xl p-8 text-center">
+        <div
+          className="text-lg leading-relaxed"
+          dangerouslySetInnerHTML={{ __html: report }}
+        />
+      </div>
     </div>
   );
 };
 
-const LessonButton = ({
-  type,
-  title,
-  image,
-  onClick,
-  color,
-}: {
-  type: string;
-  title: string;
-  image: string;
-  onClick: (type: string) => void;
-  color: string;
-}) => (
-  <button
-    className="bg-white rounded-2xl shadow-xl p-6 hover:scale-105 transition transform text-center"
-    onClick={() => onClick(type)}
-  >
-    <img src={image} alt={title} className="mx-auto w-20 mb-4" />
-    <p className={`font-bold ${color}`}>{title}</p>
-  </button>
-);
-
-export default LearningMenu;
+export default NeuroReport;
