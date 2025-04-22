@@ -14,7 +14,7 @@ const translations = {
   en: {
     title: "Choose your preferred learning format",
     visual: "For Visual (Eyes see)",
-    audio: "For Audials (Ears hear)",
+    audio: "For Аudials (Ears hear)",
     kinesthetic: "For Kinesthetic (Hands do)",
     reportButton: "🧠 View Neuro Report",
     langSwitch: "УКР",
@@ -38,7 +38,6 @@ const LearningMenu = () => {
     const visual = localStorage.getItem("visited_visual") === "true";
     const audio = localStorage.getItem("visited_audio") === "true";
     const kinesthetic = localStorage.getItem("visited_kinesthetic") === "true";
-
     setVisitedLessons({ visual, audio, kinesthetic });
   }, []);
 
@@ -59,7 +58,7 @@ const LearningMenu = () => {
       });
       const max = times.reduce((prev, curr) => curr.duration > prev.duration ? curr : prev, times[0]);
       localStorage.setItem("report_result", max.type);
-      navigate("/NeuroReport");
+      navigate("/neuro-report");
     }, 4000);
   };
 
