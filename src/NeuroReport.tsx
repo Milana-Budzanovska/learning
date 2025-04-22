@@ -96,7 +96,7 @@ const NeuroReport: React.FC = () => {
       </ul>
       ${selected.chart}
       <div class='bg-yellow-100 p-4 rounded-xl shadow-md mt-6 text-left'>
-        <strong>🔎 Порада:</strong> ${selected.tip}
+        <strong>${lang === "uk" ? "🔎 Порада:" : "🔎 Tip:"}</strong> ${selected.tip}
       </div>
     `;
     setReport(html);
@@ -105,7 +105,7 @@ const NeuroReport: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-100 via-blue-100 to-pink-100 flex items-center justify-center p-6">
       <div className="bg-white max-w-3xl w-full rounded-3xl shadow-xl p-8 text-center">
-        <div className="mb-4 text-right">
+        <div className="mb-4 text-right flex flex-col gap-2 items-end">
           <button
             onClick={() => setLang(lang === "uk" ? "en" : "uk")}
             className="bg-purple-100 text-purple-700 px-4 py-2 rounded-full shadow hover:bg-purple-200"
