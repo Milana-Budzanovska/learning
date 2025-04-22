@@ -1,112 +1,148 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-const NeuroReport: React.FC = () => {
-  const [report, setReport] = useState("");
+const translations = {
+  uk: {
+    title: "Обери зручний формат навчання",
+    visual: "Для візуала (очі бачать)",
+    audio: "Для аудіала (вуха чують)",
+    kinesthetic: "Для кінестетика (ручки роблять)",
+    reportButton: "🧠 Переглянути нейрозвіт",
+    langSwitch: "ENG",
+    loadingText: "Проводиться аналіз активності: рухи миші, час фокусу, натискання..."
+  },
+  en: {
+    title: "Choose your preferred learning format",
+    visual: "For Visual (Eyes see)",
+    audio: "For Аudials (Ears hear)",
+    kinesthetic: "For Kinesthetic (Hands do)",
+    reportButton: "🧠 View Neuro Report",
+    langSwitch: "УКР",
+    loadingText: "Analyzing your activity: mouse movements, focus time, clicks..."
+  }
+};
+
+const LearningMenu = () => {
+  const navigate = useNavigate();
+  const studentId = localStorage.getItem("studentId") || "123";
+
+  const [language, setLanguage] = useState<"uk" | "en">("uk");
+  const [visitedLessons, setVisitedLessons] = useState({
+    visual: false,
+    audio: false,
+    kinesthetic: false,
+  });
+  const [showLoader, setShowLoader] = useState(false);
 
   useEffect(() => {
-    const reportKey = localStorage.getItem("report_result");
-
-    const variants: Record<string, any> = {
-      visual: {
-        title: "🌈 Твій нейроповедінковий слід: Дослідник формату",
-        description:
-          "Ти дуже уважно досліджував(-ла) всі три формати. Часто переключав(-ла) стилі, що означає: ти прагнеш знайти найбільш зручний шлях для навчання. Це як науковець, що тестує різні прилади, перш ніж зібрати ракету! 🚀",
-        analysis: [
-          "🧩 Високий рівень адаптивності",
-          "⏱️ Час навчання: оптимальний",
-          "🎨 Ти надаєш перевагу візуальним кольорам",
-          "🎯 Частота переходів між форматами: 5+",
-        ],
-        tip: "Тобі можуть сподобатись завдання з візуалізацією й дослідницькими сюжетами!",
-        chart: `
-          <div class="w-full flex flex-col items-center my-6">
-            <p class="mb-2 text-purple-700 font-semibold">🔵 Використання форматів:</p>
-            <div class="flex gap-4 w-full justify-center">
-              <div class="w-20 h-20 bg-blue-300 rounded-full flex items-center justify-center shadow-lg text-white font-bold">В</div>
-              <div class="w-16 h-16 bg-pink-300 rounded-full flex items-center justify-center shadow-md text-white font-bold">А</div>
-              <div class="w-12 h-12 bg-yellow-300 rounded-full flex items-center justify-center shadow text-white font-bold">К</div>
-            </div>
-            <p class="mt-2 text-sm text-gray-500">Візуал — найбільше використання</p>
-          </div>
-        `,
-      },
-      audio: {
-        title: "⚡️ Твій слід: Швидкий розум із гіперфокусом",
-        description:
-          "Ти обрав(-ла) один формат і залишався(-лася) з ним. Це показує, що ти здатен(на) заглиблюватися в одне завдання з усією увагою. Така здатність називається гіперфокусом — це суперсила! 💪",
-        analysis: [
-          "🎧 Твій вибір — аудіоформат",
-          "⏳ Час на перегляд — менший за середній",
-          "🧠 Схильність до лінійної концентрації",
-          "🔁 Частота змін формату: низька",
-        ],
-        tip: "Спробуй іноді чергувати формати — мозок це полюбляє!",
-        chart: `
-          <div class="w-full my-6">
-            <p class="mb-2 text-purple-700 font-semibold">📊 Концентрація по форматах:</p>
-            <div class="flex w-full justify-center gap-3">
-              <div class="h-24 w-10 bg-pink-400 rounded-md shadow-md"></div>
-              <div class="h-10 w-10 bg-blue-200 rounded-md shadow-sm"></div>
-              <div class="h-8 w-10 bg-yellow-200 rounded-md shadow-sm"></div>
-            </div>
-            <p class="mt-2 text-sm text-gray-500">Аудіо — 80% часу, інше — мінімально</p>
-          </div>
-        `,
-      },
-      kinesthetic: {
-        title: "🌟 Нейроповедінковий слід: Сенсорний мандрівник",
-        description:
-          "Твої рухи, переміщення мишки, натискання, вибори форматів — усе свідчить про цікавість до нових вражень. Можливо, ти кінестетик — твій мозок любить, коли руки й тіло також працюють під час навчання!",
-        analysis: [
-          "✋ Ти взаємодіяв(-ла) з вправами активно",
-          "🖱️ Рух мишки: високий",
-          "🌀 Частота змін формату — висока",
-          "🔊 Інтерес до звуків: помірний",
-        ],
-        tip: "Для тебе добре підійдуть ігрові завдання або завдання, де можна щось обирати, рухати, комбінувати.",
-        chart: `
-          <div class="my-6 text-center">
-            <p class="mb-2 text-purple-700 font-semibold">🧭 Сенсорна активність:</p>
-            <div class="relative w-64 h-64 mx-auto">
-              <svg viewBox="0 0 200 200" class="w-full h-full">
-                <circle cx="100" cy="100" r="80" fill="#fcd34d" />
-                <path d="M100,100 L180,100 A80,80 0 0,1 100,180 Z" fill="#f9a8d4" />
-                <path d="M100,100 L100,20 A80,80 0 0,1 180,100 Z" fill="#93c5fd" />
-              </svg>
-              <div class="absolute inset-0 flex items-center justify-center text-white font-bold text-xl">Висока</div>
-            </div>
-            <p class="mt-2 text-sm text-gray-500">Клікання + зміна форматів + реакція</p>
-          </div>
-        `,
-      },
-    };
-
-    const selected = reportKey && variants[reportKey] ? variants[reportKey] : variants.visual;
-
-    const html = `
-      <h1 class="text-3xl font-bold text-purple-700 mb-4">${selected.title}</h1>
-      <p class="text-gray-700 mb-4">${selected.description}</p>
-      <ul class="list-disc pl-5 mb-4 text-left text-purple-600">
-        ${selected.analysis.map((item) => `<li>${item}</li>`).join("")}
-      </ul>
-      ${selected.chart}
-      <div class="bg-yellow-100 p-4 rounded-xl shadow-md mt-6 text-left">
-        <strong>🔎 Порада:</strong> ${selected.tip}
-      </div>
-    `;
-    setReport(html);
+    const visual = localStorage.getItem("visited_visual") === "true";
+    const audio = localStorage.getItem("visited_audio") === "true";
+    const kinesthetic = localStorage.getItem("visited_kinesthetic") === "true";
+    setVisitedLessons({ visual, audio, kinesthetic });
   }, []);
 
+  const handleSelect = (type: string) => {
+    localStorage.setItem(`visited_${type}`, "true");
+    localStorage.setItem(`time_${type}_start`, String(Date.now()));
+    navigate(`/${type}?studentId=${studentId}`);
+  };
+
+  const handleReport = () => {
+    setShowLoader(true);
+    setTimeout(() => {
+      const end = Date.now();
+      const times = ["visual", "audio", "kinesthetic"].map(type => {
+        const start = Number(localStorage.getItem(`time_${type}_start`) || "0");
+        const duration = end - start;
+        return { type, duration: isNaN(duration) ? 0 : duration };
+      });
+      const max = times.reduce((prev, curr) => curr.duration > prev.duration ? curr : prev, times[0]);
+      localStorage.setItem("report_result", max.type);
+      navigate("/neuro-report");
+    }, 4000);
+  };
+
+  const allVisited = Object.values(visitedLessons).every(Boolean);
+  const t = translations[language];
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-100 via-blue-100 to-pink-100 flex items-center justify-center p-6">
-      <div className="bg-white max-w-3xl w-full rounded-3xl shadow-xl p-8 text-center">
-        <div
-          className="text-lg leading-relaxed"
-          dangerouslySetInnerHTML={{ __html: report }}
-        />
+    <div className="min-h-screen bg-gradient-to-br from-pink-100 via-blue-100 to-purple-100 flex flex-col items-center justify-center p-4">
+      <div className="self-end mr-6 mb-4">
+        <button
+          onClick={() => setLanguage(language === "uk" ? "en" : "uk")}
+          className="bg-white px-4 py-2 rounded-full shadow hover:bg-gray-100"
+        >
+          {t.langSwitch}
+        </button>
       </div>
+
+      {!showLoader ? (
+        <>
+          <h1 className="text-3xl font-bold text-purple-800 mb-6">{t.title}</h1>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 w-full max-w-4xl">
+            <LessonButton
+              type="visual"
+              title={t.visual}
+              color="text-purple-600"
+              image="/assets/1000043625-removebg-preview.png"
+              onClick={handleSelect}
+            />
+            <LessonButton
+              type="audio"
+              title={t.audio}
+              color="text-pink-600"
+              image="/assets/IMG_20250307_010159_215.png"
+              onClick={handleSelect}
+            />
+            <LessonButton
+              type="kinesthetic"
+              title={t.kinesthetic}
+              color="text-yellow-600"
+              image="/assets/1000043681-fotor-bg-remover-20250312224319.png"
+              onClick={handleSelect}
+            />
+          </div>
+
+          {allVisited && (
+            <button
+              onClick={handleReport}
+              className="mt-10 bg-gradient-to-r from-purple-600 to-pink-500 text-white text-lg px-8 py-3 rounded-full shadow-lg animate-pulse hover:scale-105 transition"
+            >
+              {t.reportButton}
+            </button>
+          )}
+        </>
+      ) : (
+        <div className="flex flex-col items-center justify-center text-center mt-20">
+          <div className="text-xl text-purple-700 mb-6 animate-pulse">{t.loadingText}</div>
+          <div className="w-20 h-20 border-8 border-purple-300 border-t-purple-600 rounded-full animate-spin"></div>
+        </div>
+      )}
     </div>
   );
 };
 
-export default NeuroReport;
+const LessonButton = ({
+  type,
+  title,
+  image,
+  onClick,
+  color,
+}: {
+  type: string;
+  title: string;
+  image: string;
+  onClick: (type: string) => void;
+  color: string;
+}) => (
+  <button
+    className="bg-white rounded-2xl shadow-xl p-6 hover:scale-105 transition transform text-center"
+    onClick={() => onClick(type)}
+  >
+    <img src={image} alt={title} className="mx-auto w-20 mb-4" />
+    <p className={`font-bold ${color}`}>{title}</p>
+  </button>
+);
+
+export default LearningMenu;
