@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { BrowserRouter as Router, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const translations = {
   uk: {
@@ -22,7 +22,7 @@ const translations = {
   }
 };
 
-const LearningMenuComponent = () => {
+const LearningMenu = () => {
   const navigate = useNavigate();
   const studentId = localStorage.getItem("studentId") || "123";
 
@@ -144,12 +144,6 @@ const LessonButton = ({
     <img src={image} alt={title} className="mx-auto w-20 mb-4" />
     <p className={`font-bold ${color}`}>{title}</p>
   </button>
-);
-
-const LearningMenu = () => (
-  <Router>
-    <LearningMenuComponent />
-  </Router>
 );
 
 export default LearningMenu;
